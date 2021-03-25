@@ -1,14 +1,16 @@
 package br.com.tomioka.vendashortalicas.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Pedido {
+public class Pedido implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,11 +18,9 @@ public class Pedido {
     @ManyToOne @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @JsonIgnore
+    @JsonIgnore // evita serialização cíclica
     @OneToMany(mappedBy = "id.pedido")
     private Set<ItemPedido> produtosPedidos = new HashSet<>();
-
-    private BigDecimal totalPedido;
 
     public Pedido() {
     }
@@ -28,7 +28,6 @@ public class Pedido {
     public Pedido(Long id, Set<ItemPedido> produtos, BigDecimal totalPedido, Cliente cliente) {
         this.id = id;
         this.produtosPedidos = produtos;
-        this.totalPedido = totalPedido;
         this.cliente = cliente;
     }
 
@@ -56,14 +55,6 @@ public class Pedido {
 
     public void setProdutosPedidos(Set<ItemPedido> produtos) {
         this.produtosPedidos = produtos;
-    }
-
-    public BigDecimal getTotalPedido() {
-        return totalPedido;
-    }
-
-    public void setTotalPedido(BigDecimal totalPedido) {
-        this.totalPedido = totalPedido;
     }
 
     public Cliente getCliente() {
