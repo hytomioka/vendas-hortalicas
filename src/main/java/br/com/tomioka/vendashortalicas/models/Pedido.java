@@ -1,28 +1,45 @@
 package br.com.tomioka.vendashortalicas.models;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Pedido {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private List<Produto> produtos;
-    private BigDecimal totalPedido;
+
+    @ManyToOne @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "id.pedido")
+    private Set<ItemPedido> produtosPedidos = new HashSet<>();
+
+    private BigDecimal totalPedido;
 
     public Pedido() {
     }
 
-    public Pedido(Long id, List<Produto> produtos, BigDecimal totalPedido, Cliente cliente) {
+    public Pedido(Long id, Set<ItemPedido> produtos, BigDecimal totalPedido, Cliente cliente) {
         this.id = id;
-        this.produtos = produtos;
+        this.produtosPedidos = produtos;
         this.totalPedido = totalPedido;
         this.cliente = cliente;
+    }
+
+    @Transient
+    public BigDecimal getPrecoTotalDoPedido() {
+        BigDecimal total = new BigDecimal("0");
+        Set<ItemPedido> produtosPedidos = getProdutosPedidos();
+        for (ItemPedido itemPedido : produtosPedidos) {
+            total = total.add(itemPedido.getSubTotal());
+        }
+        return total;
     }
 
     public Long getId() {
@@ -33,12 +50,12 @@ public class Pedido {
         this.id = id;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public Set<ItemPedido> getProdutosPedidos() {
+        return produtosPedidos;
     }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
+    public void setProdutosPedidos(Set<ItemPedido> produtos) {
+        this.produtosPedidos = produtos;
     }
 
     public BigDecimal getTotalPedido() {
