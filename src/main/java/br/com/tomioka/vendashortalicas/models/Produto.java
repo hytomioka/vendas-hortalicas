@@ -20,6 +20,11 @@ public class Produto implements Serializable {
     public Produto(){
     }
 
+    public Produto(String nome, BigDecimal preco) {
+        this.nome = nome;
+        this.preco = preco;
+    }
+
     public Produto(Long id, String nome, BigDecimal preco) {
         this.id = id;
         this.nome = nome;

@@ -1,15 +1,14 @@
 package br.com.tomioka.vendashortalicas.controllers;
 
+import br.com.tomioka.vendashortalicas.dao.ProdutoDao;
 import br.com.tomioka.vendashortalicas.models.Produto;
 import br.com.tomioka.vendashortalicas.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,5 +30,12 @@ public class ProdutoController {
     public ResponseEntity<List<Produto>> findAll() {
         List<Produto> produtos = service.findAll();
         return ResponseEntity.ok().body(produtos);
+    }
+
+    @PostMapping
+    @Transactional
+    public ResponseEntity<?> create(@RequestBody ProdutoDao dao) {
+        service.save(dao);
+        return ResponseEntity.ok().build();
     }
 }
