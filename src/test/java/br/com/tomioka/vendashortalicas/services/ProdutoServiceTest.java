@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ import static org.mockito.Mockito.when;
 class ProdutoServiceTest {
 
     private ProdutoService service;
+    private List<Produto> produtos;
 
     @Mock
     private ProdutoRepository produtoRepository;
@@ -29,17 +31,29 @@ class ProdutoServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         this.service = new ProdutoService(produtoRepository);
+        this.produtos = produtos();
+
     }
 
     @Test
     void deveriaListarTodosOsProdutosDoRepositorio() {
-        List<Produto> produtos = produtos();
         when(produtoRepository.findAll()).thenReturn(produtos);
         List<Produto> produtosMock = service.findAll();
 
         assertEquals(produtos.get(0).getNome(), produtosMock.get(0).getNome());
         assertEquals(produtos.get(1).getNome(), produtosMock.get(1).getNome());
         assertEquals(produtos.get(2).getNome(), produtosMock.get(2).getNome());
+    }
+
+    @Test
+    void deveriaEfetuarUmaBuscaPorId() {
+        Long id = 1L;
+        when(produtoRepository.findById(id))
+                .thenReturn(Optional.ofNullable(produtos.get(0)));
+        Optional<Produto> produtoMock = service.find(id);
+
+        assertEquals(produtos.get(0).getId(), produtoMock.get().getId());
+        assertEquals(produtos.get(0).getNome(), produtoMock.get().getNome());
     }
 
     private List<Produto> produtos() {
