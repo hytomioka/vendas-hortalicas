@@ -1,10 +1,9 @@
 package br.com.tomioka.vendashortalicas.controllers;
 
-import br.com.tomioka.vendashortalicas.dao.ProdutoDao;
+import br.com.tomioka.vendashortalicas.dto.ProdutoDto;
 import br.com.tomioka.vendashortalicas.models.Produto;
 import br.com.tomioka.vendashortalicas.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,7 @@ public class ProdutoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> create(@RequestBody ProdutoDao dao) {
+    public ResponseEntity<?> create(@RequestBody ProdutoDto dao) {
         service.save(dao);
         return ResponseEntity.ok().build();
     }

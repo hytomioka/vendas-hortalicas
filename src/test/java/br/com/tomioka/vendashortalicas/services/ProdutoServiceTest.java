@@ -1,15 +1,15 @@
 package br.com.tomioka.vendashortalicas.services;
 
+import br.com.tomioka.vendashortalicas.dto.ProdutoDto;
 import br.com.tomioka.vendashortalicas.models.Produto;
 import br.com.tomioka.vendashortalicas.repositories.ProdutoRepository;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.internal.bytebuddy.implementation.bind.annotation.Argument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ProdutoServiceTest {
@@ -26,6 +27,9 @@ class ProdutoServiceTest {
 
     @Mock
     private ProdutoRepository produtoRepository;
+
+    @Captor
+    private ArgumentCaptor<Produto> captor;
 
     @BeforeEach
     public void setUp() {
@@ -54,6 +58,16 @@ class ProdutoServiceTest {
 
         assertEquals(produtos.get(0).getId(), produtoMock.get().getId());
         assertEquals(produtos.get(0).getNome(), produtoMock.get().getNome());
+    }
+
+    @Test
+    void deveriaSalvarUmNovoProduto() {
+        ProdutoDto dto = new ProdutoDto("Salsa", new BigDecimal("1.50"));
+        service.save(dto);
+        verify(produtoRepository).save(captor.capture());
+        Produto produto = captor.getValue();
+
+        assertEquals(dto.getNome(), produto.getNome());
     }
 
     private List<Produto> produtos() {

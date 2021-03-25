@@ -1,6 +1,6 @@
 package br.com.tomioka.vendashortalicas.services;
 
-import br.com.tomioka.vendashortalicas.dao.ProdutoDao;
+import br.com.tomioka.vendashortalicas.dto.ProdutoDto;
 import br.com.tomioka.vendashortalicas.models.Produto;
 import br.com.tomioka.vendashortalicas.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ProdutoService {
         return produtoRepository.findById(id);
     }
 
-    public void save(ProdutoDao dao) {
+    public void save(ProdutoDto dao) {
         Produto produto = dao.converte();
         produtoRepository.save(produto);
     }
